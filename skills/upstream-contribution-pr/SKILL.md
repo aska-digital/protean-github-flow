@@ -1,7 +1,7 @@
 ---
 name: upstream-contribution-pr
 description: "Rework/reopen a fork PR against an upstream repo."
-version: 1.2.0
+version: 1.3.0
 author: the Protean publication
 license: MIT
 platforms: [linux, macos, windows]
@@ -27,6 +27,33 @@ external contributions.
 4. **Track** — record contribution status in the project awareness log: `proposed → submitted → merged/rejected`.
 
 Repos we depend on get improvements we identify, not just references we index. This is a standing duty, not optional side work.
+
+## Posting shape: an external contribution opens as a draft
+
+The entry state for work on a repository we do not administer is a draft, in two layers:
+
+1. **Local draft.** While remote writes are off, the deliverable is a local branch, a commit, a test
+   run, and a rendered draft. No remote write of any kind happens, including a push to a fork.
+2. **GitHub Draft.** Once the exact bytes are approved, or a bounded grant covers them, open the
+   pull request as a draft: `gh pr create --draft ...`, or `"draft": true` on the REST body.
+
+The ready transition is a separate action, not a second attempt at the same one:
+
+- Marking ready (`gh pr ready`, or "Ready for review" in the merge box) is the documented moment
+  code owners are requested. Nothing requests them while the pull request is a draft.
+- The approval or grant must cover that transition explicitly. An approval that covers draft
+  creation alone does not cover it; the ready step needs its own approval or a grant that names it.
+- A draft cannot be merged, and converting a ready pull request back to a draft re-locks the merge
+  until it is marked ready again. Keeping the change as a draft is the correct state while it is
+  still being fixed or discussed.
+- A new head voids the prior review. Re-read the live head before the ready transition and before
+  any merge-side recommendation.
+
+Not stated where the draft rules are documented: whether checks or Actions run on a draft, and how
+draft state interacts with branch protection, rulesets, or required checks. Read the live repository
+state for both, and never write a claim about draft CI behaviour.
+
+A ready state is not an approval and not green CI. An upstream merge is never autonomous.
 
 ## Reopen after force-push is BLOCKED (platform rule)
 

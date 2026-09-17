@@ -1,7 +1,7 @@
 ---
 name: github-pr-audit
 description: "Use when auditing a GitHub PR or issue before merge."
-version: 1.12.0
+version: 1.13.0
 author: the Protean publication
 license: MIT
 platforms: [linux, macos, windows]
@@ -274,6 +274,29 @@ python3 scripts/protean-drafts/check-prose.py /tmp/live.md
 A clean local file proves nothing about the published text, and the gate is the only check
 that has actually caught anything. Posting with it unrun is the failure mode to avoid, not
 a style preference.
+
+### 6f. Draft or ready: what the state does and does not prove
+
+Read the state with the rest of the live data, never from the body text:
+`gh pr view N --repo O/R --json isDraft,state,headRefOid,mergeable,mergeStateStatus`.
+
+- **A draft cannot be merged.** A merge recommendation is valid only for a ready head, so
+  re-read `isDraft` immediately before any merge command. Converting a ready pull request back
+  to a draft re-locks the merge until it is marked ready again.
+- **Code owners are not automatically requested on a draft.** Their absence on a draft is
+  documented platform behaviour, not a missing step: do not file it as a defect and do not read
+  it as reviewers ignoring the change.
+- **Marking ready is what requests code-owner review.** Anything read about review state after
+  that event is a live read, never an assumption carried over from the draft.
+- **Do not infer check or protection behaviour from the state.** Whether checks run on a draft,
+  and how draft state interacts with branch protection, rulesets, required checks, or merge
+  queues, is not stated where the draft rules are stated. Read check runs and branch rules live
+  and say which of the two you read.
+- **Ready is not approval, a verdict, or green CI**, and a draft is not evidence that the code is
+  incomplete, unsafe, or unreviewed. The state carries only the facts above.
+
+Audit a draft as readiness feedback. The exact-head merge verdict applies to a ready head, and any
+new head voids the previous verdict.
 
 ## Never publish internal identifiers
 

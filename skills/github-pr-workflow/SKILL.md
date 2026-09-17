@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "GitHub PR lifecycle: branch, commit, open, CI, merge."
-version: 1.4.0
+version: 1.5.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -186,6 +186,54 @@ curl -s -X POST \
 The response JSON includes the PR `number` — save it for later commands.
 
 To create as a draft, add `"draft": true` to the JSON body.
+
+## 3a. Draft and ready: state semantics and transition rules
+
+The whole platform contract for a draft pull request, from the pull-requests reference page
+(https://docs.github.com/en/pull-requests/reference/pull-requests#draft-pull-requests):
+
+- A pull request can be a draft from the first action: "When you create a pull request, you can
+  choose to make it a draft pull request."
+- "Draft pull requests cannot be merged". No exception or bypass is stated.
+- Code owners are not automatically requested on a draft: "...and code owners are not automatically
+  requested to review them."
+- The documented purpose is work-in-progress sharing, not invisibility: "Drafts are useful when you
+  want to share work-in-progress without formally requesting reviews."
+- The ready transition is the code-owner request moment: "Marking a pull request as ready for review
+  will request reviews from any code owners."
+
+Conversion back to a draft is always available ("You can convert a pull request to a draft at any
+time") and it re-locks the merge completely; the same how-to page states the effect, "No one can
+merge the pull request until you mark the pull request as ready for review again." Subscribers stay
+subscribed through the change, so draft state is not confidentiality. Both flips are documented in
+"Changing the stage of a pull request": "Ready for review" sits in the merge box, "Convert to draft"
+under the Reviewers sidebar, and `gh pr ready` is the CLI form.
+
+**Not stated there:** whether checks or Actions run on a draft, and how draft state interacts with
+branch protection, rulesets, required checks, or merge queues. Never write a claim about
+draft-dependent CI or protection behaviour; read the live repository state. A ready state is not an
+approval, a review verdict, or green CI, and a draft state is not proof the code is unreviewed.
+
+### Entry state by contribution class
+
+| contribution class | state at open | who opens it | when ready is allowed |
+|---|---|---|---|
+| Small fix in a repository we administer | Ready | the implementer, after the independent pre-post review passes | already ready; convert back to a draft if scope or evidence becomes unstable |
+| Large change in a repository we administer | Draft | the implementer, after the pre-post review passes and the handoff receipt is complete | when the bounded slice, body, tests, and evidence are stable and the pre-ready review has passed; a byte or scope change repeats that review |
+| Small contribution to a repository we do not administer | local branch and rendered draft while remote writes are off; a GitHub Draft once the exact bytes are approved or a bounded grant covers them | the contribution author; no fork push while remote writes are off | only when the approval or grant covers the ready transition and the current head has been re-read |
+| Large or high-attention contribution to a repository we do not administer | local draft first, then a GitHub Draft; never opened ready | the contribution author; no unsolicited or competing-thread write | only by an approval or grant naming the exact repository and thread, with new-fact evidence and target rules satisfied |
+
+Transition rules:
+
+1. The stronger constraint wins: a large or high-attention item is a draft at entry, and a "small"
+   label never defeats a high-attention signal.
+2. A draft is not a review request. Ready is the only documented event that requests code owners.
+3. Before marking ready, confirm the approval or grant covers that transition, the bytes are
+   unchanged, the pre-ready review is PASS, and the live head is the intended head.
+4. Any push, rebase, force-push, or fix creates a new head and voids the previous review; re-audit
+   the new head.
+5. A draft cannot merge. Merge approval is valid only for a current ready head.
+6. When state, scope, authority, or a gate is ambiguous, stay in draft or blocked; never ready.
 
 ## 4. Monitoring CI Status
 

@@ -1,0 +1,50 @@
+{
+  "slug": "protean-github-flow",
+  "version": "1.0.0",
+  "contract": "The GitHub workflow skill pack: issue triage, issue-to-PR, PR lifecycle, PR audit, and upstream-contribution procedures.",
+  "kind": "skills",
+  "entrypoint": "install.sh",
+  "payload": [
+    "skills/github-issues",
+    "skills/github-issue-to-pr",
+    "skills/github-pr-workflow",
+    "skills/github-pr-audit",
+    "skills/upstream-contribution-pr",
+    "gates/protean-github-flow"
+  ],
+  "installTargets": [
+    "skills/github-issues",
+    "skills/github-issue-to-pr",
+    "skills/github-pr-workflow",
+    "skills/github-pr-audit",
+    "skills/upstream-contribution-pr",
+    "gates/protean-github-flow"
+  ],
+  "gates": [
+    {
+      "name": "internal-names",
+      "cwd": ".",
+      "postInstall": true,
+      "cmd": "python3 gates/protean-github-flow/check-internal-names.py ."
+    },
+    {
+      "name": "skill-frontmatter",
+      "cwd": ".",
+      "postInstall": false,
+      "cmd": "python3 gates/protean-github-flow/check-skill-frontmatter.py ."
+    }
+  ],
+  "requires": [],
+  "recommends": [
+    "protean-drafts",
+    "protean-doctrine"
+  ],
+  "runtime": {
+    "python": ">=3.9",
+    "bin": [
+      "git"
+    ]
+  },
+  "license": "MIT",
+  "open": []
+}

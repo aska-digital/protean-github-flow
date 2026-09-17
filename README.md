@@ -6,6 +6,19 @@ The GitHub workflow ingredient of the Protean Kit distribution. It carries the
 five procedures that take a repository from an inbound issue to a verified,
 reviewed pull request.
 
+## Do you need this?
+
+ROLE: The GitHub workflow skill pack. Five procedures take a repository from inbound issue triage to a verified, reviewed pull request, including fork upstream contribution.
+
+USE WHEN:
+- An inbound issue must be triaged and then carried to a verified PR, starting at `skills/github-issues/SKILL.md`.
+- A merge decision needs the formal audit in `skills/github-pr-audit/SKILL.md`, which reads the live head and keeps an evidence register.
+- A fork PR must be reworked or reopened upstream with neutral publication attribution.
+
+SKIP WHEN:
+- The forge is not GitHub. Every procedure assumes issues, branches, pull requests, and CI.
+- The need is the human-facing draft review page or the pipeline itself. Those live in `protean-drafts` and `protean-doctrine`, which this manifest only recommends.
+
 ## What it installs and where
 
 | Path | Contents |

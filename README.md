@@ -1,5 +1,10 @@
 The GitHub workflow skill pack: issue triage, issue-to-PR, PR lifecycle, PR audit, and upstream-contribution procedures.
 
+```bash
+hermes skills tap add aska-digital/protean-skills
+hermes skills install aska-digital/protean-skills/merge-reconciler
+```
+
 # protean-github-flow
 
 The GitHub workflow ingredient of the Protean Kit distribution. It carries the

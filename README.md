@@ -5,6 +5,11 @@ hermes skills tap add aska-digital/protean-skills
 hermes skills install aska-digital/protean-skills/merge-reconciler
 ```
 
+```bash
+hermes skills tap add aska-digital/protean-github-flow
+hermes skills install aska-digital/protean-github-flow/skills/github-issue-to-pr
+```
+
 # protean-github-flow
 
 The GitHub workflow ingredient of the Protean Kit distribution. It carries the

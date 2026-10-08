@@ -187,6 +187,16 @@ The response JSON includes the PR `number` — save it for later commands.
 
 To create as a draft, add `"draft": true` to the JSON body.
 
+Close lines in the PR body.
+
+Every item this merge needs to close gets its own bare keyword line: Closes #N, Fixes #N, or Resolves #N. Place the lines together near the end of the body, after the change list and before validation. Each number appears once in the whole body.
+
+Before merge, open the Development sidebar on the PR. Each item the merge needs to close must show there as linked. A missing entry means a missing or mistyped line. Fix it before merge.
+
+Some items are named in the body with no keyword line. An item that is already closed takes none. A live thread kept open on purpose takes none. A smaller fold covered by a larger one is named with no keyword line. The one exception: when the head commit fixes the smaller fold's symptom, it takes a keyword line like the rest.
+
+The near-end placement follows the pattern in #119652.
+
 ## 3a. Draft and ready: state semantics and transition rules
 
 The whole platform contract for a draft pull request, from the pull-requests reference page
